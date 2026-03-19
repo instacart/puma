@@ -688,8 +688,10 @@ module Puma
     end
 
     def promote_mold
-      missing_workers = @options[:workers] - @workers.size
-      return if missing_workers <= 0
+      unless @pending_phased_restart
+        missing_workers = @options[:workers] - @workers.size
+        return if missing_workers <= 0
+      end
 
       # if the active mold got reaped, remove it here
       @mold = nil unless @tracked_molds.include?(@mold)
